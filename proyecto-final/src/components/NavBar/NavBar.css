@@ -24,6 +24,7 @@ nav {
     padding: 1rem;
     background-color: #153863;
     z-index: 1000;
+    height: 60px;
 }
 
 ul {
