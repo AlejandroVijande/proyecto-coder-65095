@@ -1,25 +1,30 @@
+import { useState, useEffect } from "react"; 
+import { useParams } from "react-router-dom"; 
+import ItemDetail from "../ItemDetail/ItemDetail"; 
+import { getSingleProduct } from "../../firebase/db"; 
+import Loader from "../Loader/Loader"; 
 
- import { useState, useEffect } from "react"
- import { useParams } from 'react-router-dom';
- import ItemDetail from "../ItemDetail/ItemDetail";
+function ItemDetailContainer() {
+    const [detail, setDetail] = useState(null); 
+    const [loading, setLoading] = useState(true); 
+    const { id } = useParams(); 
 
- function ItemDetailContainer() {
-  const [detail, setDetail] = useState(null); 
-  const { id } = useParams();
+    useEffect(() => {
+        setLoading(true);
+        getSingleProduct(id, setDetail).then(() => {
+            setLoading(false);
+        });
+    }, [id]);
 
-  useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => res.json()) 
-      .then((data) => setDetail(data)) 
-      .catch((error) => console.error("Error fetching product details:", error));
-  }, [id]);
+    if (loading) {
+        return <Loader />;
+    }
 
-
-  return (
-    <div className="container mt-5">
-    {detail ? <ItemDetail detail={detail} /> : <p>Loading...</p>}
-    </div>
-  )
+    return detail ? (
+        <ItemDetail detail={detail} />
+    ) : (
+        <p>Product not available</p> 
+    );
 }
 
-export default ItemDetailContainer
+export default ItemDetailContainer;

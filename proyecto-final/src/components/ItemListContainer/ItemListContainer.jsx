@@ -1,37 +1,32 @@
-import "./itemListContainer.css";
 import { useState, useEffect } from "react";
 import ItemList from "../ItemList/ItemList";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
+import { Container, Row } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { getProducts } from "../../firebase/db";
+import Loader from "../Loader/Loader";
 
 function ItemListContainer() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { category } = useParams();
-
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        let url = "https://fakestoreapi.com/products";
-        if (category) {
-          url = `https://fakestoreapi.com/products/category/${category}`;
-        }
-        const res = await fetch(url);
-        const data = await res.json();
-        setItems(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchItems();
+    setLoading(true);
+    getProducts(setItems, category).then(() => {
+      setLoading(false);
+    }).catch((error) => {
+      console.error("Error fetching products by category:", error);
+      setLoading(false);
+    });
   }, [category]);
-
   return (
     <Container className="p-3">
-      <Row>
-        <ItemList items={items} />
-      </Row>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Row xs={1} md={2} lg={4} className="g-4">
+          <ItemList items={items} />
+        </Row>
+      )}
     </Container>
   );
 }
