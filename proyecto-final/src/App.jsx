@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import ItemDetailContainer from './components/ItemDetailContainer/ItemDetailContainer';
 import CartContainer from './components/CartContainer/CartContainer';
-import Checkout from './components/Checkout/checkout';
+import Checkout from './components/Checkout/Checkout';
 
 function App() {
   return (
